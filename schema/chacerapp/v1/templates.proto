@@ -1,0 +1,149 @@
+syntax = "proto3";
+
+package chacerapp.config.v1;
+
+import "chacerapp/v1/messages.proto";
+import "google/api/annotations.proto";
+import "google/api/client.proto";
+import "google/api/field_behavior.proto";
+import "google/api/resource.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Chacerapp.Messaging.V1";
+option go_package = "github.com/chacerapp/apiserver/server/serverpb";
+option java_multiple_files = true;
+option java_outer_classname = "MessagingServiceProto";
+option java_package = "com.chacerapp.config.v1";
+option php_namespace = "Chacerapp\\Messaging\\V1";
+
+// Provides a service for managing templates that can be used to send pre-configured messages.
+//
+// A Template can be used by the [Messenger][v1.apis.chacerapp.com.Messenger] to generate a new
+// message from a template.
+service Templates {
+  // Lists the templates in the system based on provided filters.
+  rpc ListTemplates(ListTemplatesRequest) returns (ListTemplatesResponse) {
+    option (google.api.method_signature) = "parent";
+    option (google.api.http) = {
+      get: "/v1/{parent=accounts/*/locations/*}/templates"
+    };
+  }
+
+  // Create a new template that can be used to send new messages on the platform. The
+  // display name of the template must be unique within it's parent. The template stores
+  // the rendering configuration that should be used by default when sending the message.
+  rpc CreateTemplate(CreateTemplateRequest) returns (Template) {
+    option (google.api.method_signature) = "parent,template";
+    option (google.api.http) = {
+      post: "/v1/{parent=accounts/*/locations/*}/templates",
+      body: "template"
+    };
+  }
+}
+
+// Template represents a pre-configured message that can be used to generate messages.
+message Template {
+  option (google.api.resource) = {
+    type: "apis.chacerapp.com/Template",
+    pattern: "accounts/{account}/locations/{location}/templates/{template}"
+  };
+
+  // The resource name of the template.
+  string name = 1 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The friendly name that should be used when displaying the template.
+  string display_name = 2;
+
+  // The configuration that should be used as the default values
+  // when creating a message.
+  chacerapp.v1.Message message = 3;
+
+  // The recipient
+  string recipient = 4 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference).type = "apis.chacerapp.com/Contact"
+  ];
+
+  // The person that sent the message. It must be the full
+  // resource name of the recipient. The sender must be exist within the
+  // same location that the message is being sent to.
+  string sender = 5 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference).type = "apis.chacerapp.com/Contact"
+  ];
+
+  // The room in the location that the recipient is being
+  // requested in. It must be the resource name of the room.
+  string requested_room = 6 [(google.api.resource_reference) = {
+    type: "apis.chacerapp.com/Room"
+  }];
+
+  // The resource name of the location the template exists in.
+  string location = 7 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (google.api.resource_reference).type = "apis.chacerapp.com/Location"
+  ];
+
+  // The short reason that the recipient is needed in a room. This field
+  // can be a maximum of 100 characters.
+  string reason = 8;
+
+  // A longer description of why the recipient is needed in a room. This
+  // field supports a maximum length of 1024 characters.
+  string description = 9;
+
+  // Output Only. Server-defined URL for the resource.
+  string self_link = 100 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Output Only. The time the resource was created.
+  google.protobuf.Timestamp create_time = 101 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Output Only. The time the resource was updated.
+  google.protobuf.Timestamp update_time = 102 [(google.api.field_behavior) = OUTPUT_ONLY];
+}
+
+// Retrieve a list of templates for a location.
+message ListTemplatesRequest {
+  // The parent (account and location) where the templates will be listed
+  // Specified in the format 'accounts/*/locations/*'.
+  // Location "-" can be used to list devices in all locations.
+  string parent = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference).type = "apis.chacerapp.com/Template"
+  ];
+
+  // The max number of results per page that should be returned. If the number
+  // of available results is larger than `page_size`, a `next_page_token` is
+  // returned which can be used to get the next page of results in subsequent
+  // requests. Acceptable values are 1 to 500, inclusive. (Default: 500)
+  int32 page_size = 2;
+
+  // Specifies a page token to use. Set this to the nextPageToken returned by
+  // previous list requests to get the next page of results.
+  string page_token = 3;
+}
+
+// ListTemplatesResponse will list the templates for a location.
+message ListTemplatesResponse {
+  // A list of templates in the specified location.
+  repeated Template templates = 1;
+
+  // This token allows you to get the next page of results for list requests.
+  // If the number of results is larger than `page_size`, use the
+  // `next_page_token` as a value for the query parameter `page_token` in the
+  // next request. The value will become empty when there are no more pages.
+  string next_page_token = 2;
+}
+
+// Request to create a new template.
+message CreateTemplateRequest {
+  // The parent (account and location) where the templates will be created.
+  // Specified in the format 'accounts/*/locations/*'.
+  string parent = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference).type = "apis.chacerapp.com/Location"
+  ];
+
+  // The template that should be created.
+  Template template = 2 [(google.api.field_behavior) = REQUIRED];
+}

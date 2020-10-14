@@ -1,0 +1,237 @@
+syntax = "proto3";
+
+package chacerapp.v1;
+
+import "google/api/annotations.proto";
+import "google/api/client.proto";
+import "google/api/field_behavior.proto";
+import "google/api/resource.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "google/type/color.proto";
+
+option csharp_namespace = "Chacerapp.V1";
+option go_package = "github.com/chacerapp/apiserver/server/serverpb";
+option java_multiple_files = true;
+option java_outer_classname = "ServiceProto";
+option java_package = "com.chacerapp.v1";
+option php_namespace = "Chacerapp\\V1";
+
+// Messenger provides a service to manage the messages for a location.
+service Messenger {
+  // ListMessages will list all the messages in a location.
+  rpc ListMessages(ListMessagesRequest) returns (ListMessagesResponse) {
+    option (google.api.method_signature) = "parent";
+    option (google.api.http) = {
+      get: "/v1/{parent=accounts/*/locations/*}/messages"
+    };
+  }
+
+  // SendMessage will send a new message to all devices registered in a location.
+  rpc SendMessage(SendMessageRequest) returns (Message) {
+    option (google.api.method_signature) = "name";
+    option (google.api.http) = {
+      post: "/v1/{name=accounts/*/locations/*/messages/*}:send",
+      body: "*"
+    };
+  }
+
+  // Generates a new message based on a pre-configured template.
+  //
+  // The generated message will not be created in the system. The generated
+  // message can be provided to SendMessage to send the generated message.
+  // When a message is successfully returned from this endpoint, it is guaranteed
+  // that the message is valid and will not generate any InvalidArgument errors
+  // from the SendMessage endpoint.
+  rpc GenerateMessage(GenerateMessageRequest) returns (Message) {
+    option (google.api.http) = {
+      post: "/v1/{name=accounts/*/locations/*/messages/*}:generate",
+      body: "*"
+    };
+  }
+
+  // CompleteMessage will mark a sent message as completed and remove it
+  // from all devices.
+  rpc CompleteMessage(CompleteMessageRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/v1/{name=accounts/*/locations/*/messages/*}:complete",
+      body: "*"
+    };
+  }
+
+  // CancelMessage will mark a sent message as canceled and remove it from
+  // all devices.
+  rpc CancelMessage(CancelMessageRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/v1/{name=accounts/*/locations/*/messages/*}:cancel",
+      body: "*"
+    };
+  }
+}
+
+// A Message represents a message configuration that is sent to a recipient in a location.
+//
+// Each message contains a DisplayConfig that can be used by a device to determine
+// a message should be rendered to end-users.
+message Message {
+  option (google.api.resource) = {
+    type: "apis.chacerapp.com/Message",
+    pattern: "accounts/{account}/locations/{location}/messages/{message}"
+  };
+
+  // The configuration settings for how the message should be displayed
+  // on a device. This configuration is determined by the system based
+  // on the recipient of the message.
+  message DisplayConfig {
+    // The background color that should be used when displaying
+    // the message.
+    google.type.Color background_color = 1 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+    // The foreground color that should be used for the message's
+    // foreground text on the device.
+    google.type.Color foreground_color = 2 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+    // The color of the border that should be used for the border
+    // of the message.
+    google.type.Color border_color = 3 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+    // The resource name of the sound that should be played
+    // when the message is received by the device.
+    string sound = 4 [(google.api.field_behavior) = OUTPUT_ONLY];
+  }
+
+  // The name (account, location, message id) of the message.
+  // In the format 'accounts/*/locations/*/messages/*'.
+  string name = 1 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The person the message should be sent to. It must be the resource name
+  // of the recipient.
+  string recipient = 2 [
+    (google.api.field_behavior) = IMMUTABLE,
+    (google.api.resource_reference) = {
+      type: "apis.chacerapp.com/Contact"
+    }
+  ];
+
+  // The person that sent the message. It must be the resource name of the
+  // recipient. The sender must be exist within the same location that the
+  // message is being sent to.
+  string sender = 3 [
+    (google.api.field_behavior) = IMMUTABLE,
+    (google.api.resource_reference) = {
+      type: "apis.chacerapp.com/Contact"
+    }
+  ];
+
+  // The room in the location that the recipient is being
+  // requested in. It must be the resource name of the room.
+  string requested_room = 4 [
+    (google.api.field_behavior) = IMMUTABLE,
+    (google.api.resource_reference).type = "apis.chacerapp.com/Room"
+  ];
+
+  // The resource name of the location the message was created in.
+  string location = 5 [
+    (google.api.field_behavior) = OUTPUT_ONLY,
+    (google.api.resource_reference).type = "apis.chacerapp.com/Location"
+  ];
+
+  // The short reason that the recipient is needed . This field
+  // can be a maximum of 100 characters.
+  string reason = 6;
+
+  // A longer description of why the recipient is needed in a room. This
+  // field supports a maximum length of 1024 characters.
+  string description = 7;
+
+  // The display configuration that should be used to display the message
+  // on a device.
+  DisplayConfig display_config = 8 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // Server-defined URL for the resource.
+  string self_link = 100 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The time the resource was created.
+  google.protobuf.Timestamp create_time = 101 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The time the resource was updated.
+  google.protobuf.Timestamp update_time = 102 [(google.api.field_behavior) = OUTPUT_ONLY];
+
+  // The timestamp when the message was deleted. A deleted message will
+  // be purged after 31 days.
+  google.protobuf.Timestamp delete_time = 103 [(google.api.field_behavior) = OUTPUT_ONLY];
+}
+
+// ListMessagesRequest will list all of the messages in a location.
+message ListMessagesRequest {
+  // The parent (account and location) where the messages will be listed
+  // Specified in the format 'accounts/*/locations/*'.
+  // Location "-" will get the messages for all locations in an account.
+  string parent = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference).type = "apis.chacerapp.com/Location"
+  ];
+
+  // The max number of results per page that should be returned. If the number
+  // of available results is larger than `page_size`, a `next_page_token` is
+  // returned which can be used to get the next page of results in subsequent
+  // requests. Acceptable values are 1 to 500, inclusive. (Default: 500)
+  int32 page_size = 2;
+
+  // Specifies a page token to use. Set this to the nextPageToken returned by
+  // previous list requests to get the next page of results.
+  string page_token = 3;
+}
+
+// ListMessagesResponse will list the messages for a location.
+message ListMessagesResponse {
+  // A list of messages in the specified location.
+  repeated Message messages = 1;
+
+  // This token allows you to get the next page of results for list requests.
+  // If the number of results is larger than `page_size`, use the
+  // `next_page_token` as a value for the query parameter `page_token` in the
+  // next request. The value will become empty when there are no more pages.
+  string next_page_token = 2;
+}
+
+// SendMessageRequest will send a message to all the devices in a location.
+message SendMessageRequest {
+  // The parent (account and location) where the message will be sent.
+  // Specified in the format 'accounts/*/locations/*'.
+  string parent = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference).child_type = "messenger.chacerappapis.com/Message"
+  ];
+
+  // The message that should be sent.
+  Message message = 2 [(google.api.field_behavior) = REQUIRED];
+}
+
+// CompleteMessageRequest will mark a message sent to a location as completed.
+message CompleteMessageRequest {
+  // The name (account, location, message id) of the message to complete.
+  // In the format 'accounts/*/locations/*/messages/*'.
+  string name = 1 [
+    (google.api.resource_reference).type = "messenger.chacerappapis.com/Message"
+  ];
+}
+
+// CancelMessageRequest will mark a message sent to a location as canceled.
+message CancelMessageRequest {
+  // The name (account, location, message id) of the message to complete.
+  // In the format 'accounts/*/locations/*/messages/*'.
+  string name = 1 [
+    (google.api.resource_reference).type = "messenger.chacerappapis.com/Message"
+  ];
+}
+
+// GenerateMessageRequest will generate a message from a pre-configured template
+message GenerateMessageRequest {
+  // The name (account, location, and template name) of the template that
+  // should be used to generate the message. Specified in the format
+  // 'accounts/*/locations/*/templates/*'.
+  string name = 1 [
+    (google.api.resource_reference).type = "messenger.chacerappapis.com/Message"
+  ];
+}

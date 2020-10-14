@@ -1,0 +1,50 @@
+{
+  "resources": [
+    {
+      "@type": "chacerapp.v1.CreateAccountRequest",
+      "account": { "displayName": "Default" },
+      "account_id": "default"
+    },
+    {
+      "@type": "chacerapp.v1.CreateAccountRequest",
+      "account": { "displayName": "secondary" },
+      "account_id": "secondary"
+    },
+    {
+      "@type": "chacerapp.v1.CreateLocationRequest",
+      "parent": "accounts/default",
+      "location": {
+        "displayName": "Default",
+        "description": "This is my default location"
+      },
+      "location_id": "default"
+    },
+    {
+      "@type": "chacerapp.v1.CreateLocationRequest",
+      "parent": "accounts/default",
+      "location": {
+        "displayName": "Secondary",
+        "description": "This is my secondary location"
+      },
+      "location_id": "secondary"
+    },
+    {
+      "@type": "chacerapp.v1.CreateLocationRequest",
+      "parent": "accounts/secondary",
+      "location": {
+        "displayName": "Default",
+        "description": "This is my default location"
+      },
+      "location_id": "default"
+    },
+    {
+      "@type": "chacerapp.v1.CreateLocationRequest",
+      "parent": "accounts/secondary",
+      "location": {
+        "displayName": "Secondary",
+        "description": "This is my secondary location"
+      },
+      "location_id": "secondary"
+    }
+  ]
+}

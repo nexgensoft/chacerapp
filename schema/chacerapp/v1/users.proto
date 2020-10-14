@@ -1,0 +1,177 @@
+syntax = "proto3";
+
+package chacerapp.v1;
+
+import "chacerapp/iam/v1/annotations.proto";
+import "google/api/annotations.proto";
+import "google/api/client.proto";
+import "google/api/field_behavior.proto";
+import "google/api/resource.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Chacerapp.V1";
+option go_package = "github.com/chacerapp/apiserver/server/serverpb";
+option java_multiple_files = true;
+option java_outer_classname = "ServiceProto";
+option java_package = "com.chacerapp.v1";
+option php_namespace = "Chacerapp\\V1";
+
+service UserManager {
+  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse) {
+    option (chacerapp.iam.v1.required_permissions) = "resourcemanager.users.list";
+    option (google.api.method_signature) = "parent";
+    option (google.api.http) = {
+      get: "/v1/{parent=accounts/*}/users"
+    };
+  }
+
+  rpc CreateUser(CreateUserRequest) returns (User) {
+    option (chacerapp.iam.v1.required_permissions) = "resourcemanager.users.create";
+    option (google.api.method_signature) = "parent,user";
+    option (google.api.http) = {
+      post: "/v1/{parent=accounts/*}/users",
+      body: "user"
+    };
+  }
+
+  rpc GetUser(GetUserRequest) returns (User) {
+    option (chacerapp.iam.v1.required_permissions) = "resourcemanager.users.get";
+    option (google.api.method_signature) = "name";
+    option (google.api.http) = {
+      get: "/v1/{name=accounts/*/users/*}"
+    };
+  }
+
+  rpc UpdateUser(UpdateUserRequest) returns (User) {
+    option (chacerapp.iam.v1.required_permissions) = "resourcemanager.users.update";
+    option (google.api.method_signature) = "user,update_mask";
+    option (google.api.http) = {
+      patch: "/v1/{user.name=accounts/*/users/*}",
+      body: "user"
+    };
+  }
+
+  rpc DeleteUser(DeleteUserRequest) returns (google.protobuf.Empty) {
+    option (chacerapp.iam.v1.required_permissions) = "resourcemanager.users.delete";
+    option (google.api.method_signature) = "name";
+    option (google.api.http) = {
+      delete: "/v1/{name=accounts/*/users/*}"
+    };
+  }
+}
+
+// UserState represents the available statuses for a user.
+enum UserState {
+  // Not Set. This will result in an error.
+  USER_STATE_UNSPECIFIED = 0;
+
+  // The user is active in the system.
+  USER_STATE_ACTIVE = 1;
+
+  // The user is inactive. An inactive user will
+  // not be able to access the system.
+  USER_STATE_INACTIVE = 2;
+
+  // The user has not activated their account yet.
+  USER_STATE_PENDING = 3;
+}
+
+message User {
+  // Output Only. The name (account and user) of the user.
+  // Specified in the format 'accounts/*/users/*'.
+  string name = 1;
+
+  // Required. The name that should be used when displaying the user.
+  string display_name = 2;
+
+  // Required. The email of the user. This email must be unique across
+  // all accounts in the system.
+  string email = 3;
+
+  // Output Only. Server-defined URL for the resource.
+  string self_link = 100;
+
+  // Output Only. The state of the user.
+  UserState state = 101;
+
+  // Output Only. The reason that an user is in a status.
+  string reason = 102;
+
+  // Output Only. A longer description for why an user is
+  // in a status.
+  string description = 103;
+
+  // Output Only. The time the resource was created.
+  google.protobuf.Timestamp create_time = 104;
+
+  // Output Only. The time the resource was updated.
+  google.protobuf.Timestamp update_time = 105;
+}
+
+// ListUsersRequest will return a paginated list of users.
+message ListUsersRequest {
+  string parent = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference).type = "apis.chacerapp.com/Account"
+  ];
+
+  // The max number of results per page that should be returned. If the number
+  // of available results is larger than `page_size`, a `next_page_token` is
+  // returned which can be used to get the next page of results in subsequent
+  // requests. Acceptable values are 1 to 500, inclusive. (Default: 500)
+  int32 page_size = 2;
+
+  // Specifies a page token to use. Set this to the nextPageToken returned by
+  // previous list requests to get the next page of results.
+  string page_token = 3;
+}
+
+// ListUsersResponse will list the users.
+message ListUsersResponse {
+  // A list of users.
+  repeated User users = 1;
+
+  // This token allows you to get the next page of results for list requests.
+  // If the number of results is larger than `page_size`, use the
+  // `next_page_token` as a value for the query parameter `page_token` in the
+  // next request. The value will become empty when there are no more pages.
+  string next_page_token = 2;
+}
+
+message CreateUserRequest {
+  string parent = 1 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference).type = "apis.chacerapp.com/Account"
+  ];
+
+  User user = 2 [(google.api.field_behavior) = REQUIRED];
+}
+
+message UpdateUserRequest {
+  User user = 1 [(google.api.field_behavior) = REQUIRED];
+
+  google.protobuf.FieldMask update_mask = 2;
+}
+
+message SendUserInviteRequest {
+  string name = 1[
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference).type = "apis.chacerapp.com/User"
+  ];
+}
+
+message GetUserRequest {
+  string name = 1[
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference).type = "apis.chacerapp.com/User"
+  ];
+}
+
+message DeleteUserRequest {
+  string name = 1[
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference).type = "apis.chacerapp.com/User"
+  ];
+}
