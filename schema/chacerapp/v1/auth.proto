@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package chacerapp.v1;
+
+import "chacerapp/iam/v1/annotations.proto";
+import "google/api/annotations.proto";
+import "google/api/client.proto";
+import "google/api/field_behavior.proto";
+
+option csharp_namespace = "Chacerapp.V1";
+option go_package = "github.com/chacerapp/apiserver/server/serverpb";
+option java_multiple_files = true;
+option java_outer_classname = "AuthProto";
+option java_package = "com.chacerapp.v1";
+option php_namespace = "Chacerapp\\V1";
+
+// Provision access tokens for IAM credentials
+service IAMCredentials {
+  // Generate an access token for a service account or a user.
+  rpc GenerateAccessToken(GenerateAccessTokenRequest) returns (GenerateAccessTokenResponse) {
+    option (chacerapp.iam.v1.required_permissions) = "identity.users.generateAccessToken";
+    option (google.api.method_signature) = "account";
+    option (google.api.http) = {
+      post: "/v1/{account=accounts/*/users/*}:generateAccessToken",
+      body: "*"
+    };
+  }
+}
+
+// GenerateAccessTokenRequest will generate an access token for a service account
+message GenerateAccessTokenRequest {
+  // Required. The email of the user.
+  string account = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+// GenerateAccessTokenResponse will contain the generated access token
+message GenerateAccessTokenResponse {
+  // The access token that can be used to access the API.
+  string access_token = 1;
+}

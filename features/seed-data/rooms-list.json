@@ -1,0 +1,76 @@
+{
+  "resources": [
+    {
+      "@type": "chacerapp.v1.CreateRoomRequest",
+      "parent": "accounts/default/locations/default",
+      "room": {
+        "displayName": "Default",
+        "description": "This is my default room"
+      },
+      "room_id": "default"
+    },
+    {
+      "@type": "chacerapp.v1.CreateRoomRequest",
+      "parent": "accounts/default/locations/default",
+      "room": {
+        "displayName": "Secondary",
+        "description": "This is my secondary room"
+      },
+      "room_id": "secondary"
+    },
+    {
+      "@type": "chacerapp.v1.CreateRoomRequest",
+      "parent": "accounts/default/locations/secondary",
+      "room": {
+        "displayName": "Default",
+        "description": "This is my default room"
+      },
+      "room_id": "default"
+    },
+    {
+      "@type": "chacerapp.v1.CreateRoomRequest",
+      "parent": "accounts/default/locations/secondary",
+      "room": {
+        "displayName": "Secondary",
+        "description": "This is my secondary room"
+      },
+      "room_id": "secondary"
+    },
+    {
+      "@type": "chacerapp.v1.CreateRoomRequest",
+      "parent": "accounts/secondary/locations/default",
+      "room": {
+        "displayName": "Default",
+        "description": "This is my default room"
+      },
+      "room_id": "default"
+    },
+    {
+      "@type": "chacerapp.v1.CreateRoomRequest",
+      "parent": "accounts/secondary/locations/default",
+      "room": {
+        "displayName": "Secondary",
+        "description": "This is my secondary room"
+      },
+      "room_id": "secondary"
+    },
+    {
+      "@type": "chacerapp.v1.CreateRoomRequest",
+      "parent": "accounts/secondary/locations/secondary",
+      "room": {
+        "displayName": "Default",
+        "description": "This is my default room"
+      },
+      "room_id": "default"
+    },
+    {
+      "@type": "chacerapp.v1.CreateRoomRequest",
+      "parent": "accounts/secondary/locations/secondary",
+      "room": {
+        "displayName": "Secondary",
+        "description": "This is my secondary room"
+      },
+      "room_id": "secondary"
+    }
+  ]
+}
