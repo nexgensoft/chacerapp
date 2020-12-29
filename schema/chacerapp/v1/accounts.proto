@@ -13,7 +13,7 @@ import "google/protobuf/timestamp.proto";
 option csharp_namespace = "Chacerapp.V1";
 option go_package = "github.com/chacerapp/apiserver/server/serverpb";
 option java_multiple_files = true;
-option java_outer_classname = "ServiceProto";
+option java_outer_classname = "AccountsProto";
 option java_package = "com.chacerapp.v1";
 option php_namespace = "Chacerapp\\V1";
 
@@ -168,7 +168,7 @@ service Accounts {
 // within the platform. When an account is deleted, the phase
 message Account {
   option (google.api.resource) = {
-    type: "apis.chacerapp.com/Account",
+    type: "chacerappapis.com/Account",
     plural: "accounts",
     singular: "account",
     pattern: "accounts/{account}",
@@ -236,7 +236,7 @@ message Account {
 // billing.UpdateSubscription endpoint.
 message AccountQuotas {
   option (google.api.resource) = {
-    type: "apis.chacerapp.com/AccountQuotas",
+    type: "chacerappapis.com/AccountQuotas",
     plural: "accountQuotas",
     singular: "accountQuotas",
     pattern: "accounts/{account}/quotas",
@@ -257,7 +257,7 @@ message AccountQuotas {
 // AccountStatus represents the status of an account.
 message AccountStatus {
   option (google.api.resource) = {
-    type: "apis.chacerapp.com/AccountStatus",
+    type: "chacerappapis.com/AccountStatus",
     plural: "accountStatus",
     singular: "accountStatus",
     pattern: "accounts/{account}/status",
@@ -336,7 +336,7 @@ message GetAccountRequest {
   // Specified in the format 'accounts/*`.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference).type = "apis.chacerapp.com/Account"
+    (google.api.resource_reference).type = "chacerappapis.com/Account"
   ];
 }
 
@@ -346,7 +346,7 @@ message ActivateAccountRequest {
   // Specified in the format 'accounts/*`.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference).type = "apis.chacerapp.com/Account"
+    (google.api.resource_reference).type = "chacerappapis.com/Account"
   ];
 }
 
@@ -359,7 +359,7 @@ message SuspendAccountRequest {
   // Specified in the format 'accounts/*`.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference).type = "apis.chacerapp.com/Account"
+    (google.api.resource_reference).type = "chacerappapis.com/Account"
   ];
 
   // The reason why the account is being suspended. The following
@@ -380,7 +380,7 @@ message SuspendAccountResponse {
   // Specified in the format 'accounts/*`.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference).type = "chacerapp.com/Account"
+    (google.api.resource_reference).type = "chacerappapis.com/Account"
   ];
 }
 
@@ -390,7 +390,7 @@ message DeleteAccountRequest {
   // Specified in the format 'accounts/*`.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference).type = "apis.chacerapp.com/Account"
+    (google.api.resource_reference).type = "chacerappapis.com/Account"
   ];
 }
 
@@ -400,7 +400,7 @@ message GetAccountStatusRequest {
   // in the format of "accounts/*/status".
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference).type = "chacerapp.com/AccountStatus"
+    (google.api.resource_reference).type = "chacerappapis.com/AccountStatus"
   ];
 }
 
@@ -419,7 +419,7 @@ message GetAccountQuotasRequest {
   // in the format of "accounts/*/quotas".
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference).type = "chacerapp.com/AccountQuotas"
+    (google.api.resource_reference).type = "chacerappapis.com/AccountQuotas"
   ];
 }
 

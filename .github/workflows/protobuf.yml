@@ -1,0 +1,32 @@
+# Creates a workflow that will validate and build any protobuf files
+# that are in the repository. Protobuf files will automatically be validated
+# against the https://api.dev guides for correctness.
+name: Protobuf Validation & Build
+
+on:
+  # Trigger the workflow on push or pull request,
+  # but only for the main branch
+  push:
+    branches:
+      - "*"
+  pull_request:
+    branches:
+      - "main"
+
+jobs:
+  # Create
+  lint:
+    runs-on: ubuntu-20.04
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      # Setup the API Linter tool
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '^1.15.0'
+      - name: Install API Linter
+        run: go get -u github.com/googleapis/api-linter/cmd/api-linter@v1.10.0
+      - name: Lint Protobuf Files
+        run: cd schema && api-linter --set-exit-status -I . -I api-common-protos chacerapp/*/*.proto

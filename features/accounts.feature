@@ -77,7 +77,7 @@ Feature: Account Management
      And the response value "name" will be "accounts/my-testing-account"
      And the response value "displayName" will be "My Testing Account"
      And the response value "status.phase" will be "ACCOUNT_PHASE_ACTIVE"
-     And the response value "selfLink" will be "//apis.chacerapp.com/accounts/my-testing-account"
+     And the response value "selfLink" will be "//chacerappapis.com/accounts/my-testing-account"
     # Test that calling the error will result in an error message
     When calling the "chacerapp.v1.Accounts/CreateAccount" RPC
     Then I will receive an error with code "ALREADY_EXISTS"
@@ -91,7 +91,7 @@ Feature: Account Management
      And the response value "name" will be "accounts/my-testing-account"
      And the response value "displayName" will be "My Testing Account"
      And the response value "status.phase" will be "ACCOUNT_PHASE_ACTIVE"
-     And the response value "selfLink" will be "//apis.chacerapp.com/accounts/my-testing-account"
+     And the response value "selfLink" will be "//chacerappapis.com/accounts/my-testing-account"
 
   Scenario: Verify an account can be activated and suspended
     Given a JSON "chacerapp.v1.SuspendAccountRequest"

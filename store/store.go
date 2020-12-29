@@ -28,7 +28,7 @@ func New(db *sql.DB, paginator Pagination) Storage {
 }
 
 const defaultPageSize = 25
-const serviceName = "//apis.chacerapp.com/"
+const serviceName = "//chacerappapis.com/"
 
 var protoMarshaller = jsonpb.Marshaler{}
 var protoUnmarshaller = jsonpb.Unmarshaler{}

@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package chacerapp.v1;
 
+import "chacerapp/v1/accounts.proto";
 import "chacerapp/iam/v1/annotations.proto";
 import "google/api/field_behavior.proto";
 import "google/api/resource.proto";
@@ -13,7 +14,7 @@ import "google/protobuf/timestamp.proto";
 option csharp_namespace = "Chacerapp.V1";
 option go_package = "github.com/chacerapp/apiserver/server/serverpb";
 option java_multiple_files = true;
-option java_outer_classname = "ServiceProto";
+option java_outer_classname = "ContactsProto";
 option java_package = "com.chacerapp.v1";
 option php_namespace = "Chacerapp\\V1";
 
@@ -35,7 +36,7 @@ service Contacts {
   // An AlreadyExists error will be returned when the resulting contact's
   // resource name conflicts with an existing contact.
   rpc CreateContact(CreateContactRequest) returns (Contact) {
-    option (google.api.method_signature) = "parent,contact,contact_id";
+    option (google.api.method_signature) = "contact,contact_id";
     option (chacerapp.iam.v1.required_permissions) = "resourcemanager.contacts.create";
     option (google.api.http) = {
       post: "/v1/{parent=accounts/*}/contacts",
@@ -86,7 +87,7 @@ service Contacts {
 // A contact can be used to represent a recipient for a message.
 message Contact {
   option (google.api.resource) = {
-    type: "apis.chacerapp.com/Contact",
+    type: "chacerappapis.com/Contact",
     plural: "contacts",
     singular: "contact",
     pattern: "contacts/{contact}",
@@ -150,7 +151,7 @@ message ListContactsRequest {
   string parent = 1 [
     (google.api.field_behavior) = REQUIRED,
     (google.api.resource_reference) = {
-      type: "apis.chacerapp.com/Contact"
+      type: "chacerappapis.com/Contact"
     }
   ];
 
@@ -183,7 +184,7 @@ message CreateContactRequest {
   // The parent that should be used for the contact.
   string parent = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference).type = "apis.chacerapp.com/Account"
+    (google.api.resource_reference).type = "chacerappapis.com/Account"
   ];
 
   // The contact that should be created.
@@ -212,7 +213,7 @@ message GetContactRequest {
   // Specified in the format 'contacts/*`.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference).type = "apis.chacerapp.com/Contact"
+    (google.api.resource_reference).type = "chacerappapis.com/Contact"
   ];
 }
 
@@ -222,6 +223,6 @@ message DeleteContactRequest {
   // Specified in the format 'contacts/*`.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference).type = "apis.chacerapp.com/Contact"
+    (google.api.resource_reference).type = "chacerappapis.com/Contact"
   ];
 }

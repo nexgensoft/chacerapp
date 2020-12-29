@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package chacerapp.v1;
 
+import "chacerapp/v1/locations.proto";
 import "chacerapp/iam/v1/annotations.proto";
 import "google/api/annotations.proto";
 import "google/api/client.proto";
@@ -14,7 +15,7 @@ import "google/protobuf/timestamp.proto";
 option csharp_namespace = "Chacerapp.V1";
 option go_package = "github.com/chacerapp/apiserver/server/serverpb";
 option java_multiple_files = true;
-option java_outer_classname = "ServiceProto";
+option java_outer_classname = "RoomsProto";
 option java_package = "com.chacerapp.v1";
 option php_namespace = "Chacerapp\\V1";
 
@@ -87,7 +88,7 @@ service Rooms {
 // A room within a location where contact can be requested.
 message Room {
   option (google.api.resource) = {
-    type: "apis.chacerapp.com/Room",
+    type: "chacerappapis.com/Room",
     plural: "rooms",
     singular: "room",
     pattern: "accounts/{account}/locations/{location}/rooms/{room}",
@@ -151,7 +152,7 @@ message ListRoomsRequest {
   // Specified in the format 'accounts/*/locations/*'.
   string parent = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference).type = "apis.chacerapp.com/Location"
+    (google.api.resource_reference).type = "chacerappapis.com/Location"
   ];
 
   // The max number of results per page that should be returned. If the number
@@ -183,7 +184,7 @@ message CreateRoomRequest {
   // Specified in the format 'accounts/*/locations/*'.
   string parent = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference).type = "apis.chacerapp.com/Location"
+    (google.api.resource_reference).type = "chacerappapis.com/Location"
   ];
 
   // The room that should be created.
@@ -209,7 +210,7 @@ message GetRoomRequest {
   // Specified in the format 'accounts/*/locations/*/rooms/*'.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference).type = "apis.chacerapp.com/Room"
+    (google.api.resource_reference).type = "chacerappapis.com/Room"
   ];
 }
 
@@ -219,6 +220,6 @@ message DeleteRoomRequest {
   // Specified in the format 'accounts/*/locations/*/rooms/*'.
   string name = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference).type = "apis.chacerapp.com/Room"
+    (google.api.resource_reference).type = "chacerappapis.com/Room"
   ];
 }

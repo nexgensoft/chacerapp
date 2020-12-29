@@ -1,7 +1,8 @@
 syntax = "proto3";
 
-package chacerapp.config.v1;
+package chacerapp.v1;
 
+// import "chacerapp/v1/accounts.proto";
 import "chacerapp/v1/messages.proto";
 import "google/api/annotations.proto";
 import "google/api/client.proto";
@@ -9,16 +10,16 @@ import "google/api/field_behavior.proto";
 import "google/api/resource.proto";
 import "google/protobuf/timestamp.proto";
 
-option csharp_namespace = "Chacerapp.Messaging.V1";
+option csharp_namespace = "Chacerapp.V1";
 option go_package = "github.com/chacerapp/apiserver/server/serverpb";
 option java_multiple_files = true;
-option java_outer_classname = "MessagingServiceProto";
-option java_package = "com.chacerapp.config.v1";
-option php_namespace = "Chacerapp\\Messaging\\V1";
+option java_outer_classname = "TemplatesProto";
+option java_package = "com.chacerapp.v1";
+option php_namespace = "Chacerapp\\V1";
 
 // Provides a service for managing templates that can be used to send pre-configured messages.
 //
-// A Template can be used by the [Messenger][v1.apis.chacerapp.com.Messenger] to generate a new
+// A Template can be used by the [Messenger][v1.chacerapp.com.Messenger] to generate a new
 // message from a template.
 service Templates {
   // Lists the templates in the system based on provided filters.
@@ -44,7 +45,7 @@ service Templates {
 // Template represents a pre-configured message that can be used to generate messages.
 message Template {
   option (google.api.resource) = {
-    type: "apis.chacerapp.com/Template",
+    type: "chacerappapis.com/Template",
     pattern: "accounts/{account}/locations/{location}/templates/{template}"
   };
 
@@ -61,7 +62,7 @@ message Template {
   // The recipient
   string recipient = 4 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference).type = "apis.chacerapp.com/Contact"
+    (google.api.resource_reference).type = "chacerappapis.com/Contact"
   ];
 
   // The person that sent the message. It must be the full
@@ -69,19 +70,19 @@ message Template {
   // same location that the message is being sent to.
   string sender = 5 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference).type = "apis.chacerapp.com/Contact"
+    (google.api.resource_reference).type = "chacerappapis.com/Contact"
   ];
 
   // The room in the location that the recipient is being
   // requested in. It must be the resource name of the room.
   string requested_room = 6 [(google.api.resource_reference) = {
-    type: "apis.chacerapp.com/Room"
+    type: "chacerappapis.com/Room"
   }];
 
   // The resource name of the location the template exists in.
   string location = 7 [
     (google.api.field_behavior) = OUTPUT_ONLY,
-    (google.api.resource_reference).type = "apis.chacerapp.com/Location"
+    (google.api.resource_reference).type = "chacerappapis.com/Location"
   ];
 
   // The short reason that the recipient is needed in a room. This field
@@ -109,7 +110,7 @@ message ListTemplatesRequest {
   // Location "-" can be used to list devices in all locations.
   string parent = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference).type = "apis.chacerapp.com/Template"
+    (google.api.resource_reference).type = "chacerappapis.com/Template"
   ];
 
   // The max number of results per page that should be returned. If the number
@@ -141,7 +142,7 @@ message CreateTemplateRequest {
   // Specified in the format 'accounts/*/locations/*'.
   string parent = 1 [
     (google.api.field_behavior) = REQUIRED,
-    (google.api.resource_reference).type = "apis.chacerapp.com/Location"
+    (google.api.resource_reference).type = "chacerappapis.com/Location"
   ];
 
   // The template that should be created.
